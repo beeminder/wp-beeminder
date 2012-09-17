@@ -18,6 +18,9 @@ class BeeminderPingPlugin
     public function __construct()
     {
         
+        // Beeminder API autoloads
+        add_action('init', array(&$this, 'Handle_onInit_loadBeeminderApi'));
+        
         // Install / Uninstall hooks
         register_activation_hook(__FILE__, array(&$this, 'Handle_onActivate'));
         register_deactivation_hook(__FILE__, array(&$this, 'Handle_onDeActivate'));
@@ -26,8 +29,24 @@ class BeeminderPingPlugin
         add_action('admin_menu', array(&$this, 'Handle_createAdminMenu'));
                 
         // Post publish hook
+
         
     }
+    
+    
+    // ------------------------------------------------------------
+    // -- Beeminder API autoloads
+    // ------------------------------------------------------------
+    
+    /**
+     * Creates a Beeminder API autoloader.
+     */
+    public function Handle_onInit_loadBeeminderApi()
+    {
+        require_once dirname(__FILE__) . '/vendor/beeminder-api/lib/Beeminder/Autoloader.php';
+        Beeminder_Autoloader::register();
+    }
+    
     
     // ------------------------------------------------------------
     // -- Admin Area
