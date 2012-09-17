@@ -1,0 +1,3 @@
+[submodule "vendor/beeminder-api"]
+	path = vendor/beeminder-api
+	url = git://github.com/Sodaware/beeminder-api.git
