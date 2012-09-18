@@ -29,7 +29,7 @@ class BeeminderPingPlugin
         add_action('admin_menu', array(&$this, 'Handle_createAdminMenu'));
                 
         // Post publish hook
-
+        add_action('publish_post', array(&$this, 'Handle_onPublishPost'), 10, 2);
         
     }
     
@@ -83,6 +83,61 @@ class BeeminderPingPlugin
      */
     function Handle_onDeActivate()
     {
+        
+    }
+    
+    
+    // ------------------------------------------------------------
+    // -- Post Hooks
+    // ------------------------------------------------------------
+    
+    /**
+     * Handles the "publish_post" hook. Checks for Beeminder options, checks the
+     * post is new and sends data to the appropriate goals.
+     */
+    public function Handle_onPublishPost($postId, $post)
+    {
+        
+        // Exit if plugin not setup or has pings disabled
+        if (!get_option('beeminder_ping_key') && !get_option('beeminder_ping_post_enabled') && !get_option('beeminder_ping_wordcount_enabled')) {
+            return;
+        }
+        
+        // Exit if post is already published (i.e. this was an edit)
+        if ($post->post_date != $post->post_modified) {
+            return;
+        }
+        
+        // Create an API interface
+        $client = new Beeminder_Client();
+        $client->login(get_option('beeminder_ping_username'), get_option('beeminder_ping_key'));
+        
+        // Send a single ping
+        if (get_option('beeminder_ping_post_enabled')) {
+            
+            $data = $client->getDatapointApi()->createDatapoint(
+                get_option('beeminder_ping_post_goal'),
+                1,
+                "Post published: {$post->post_title}"
+            );
+            
+        }
+
+        if (get_option('beeminder_ping_wordcount_enabled')) {
+            
+            // Count words
+            $words = array();
+            preg_match_all("/\w+/", $post->post_content, $words);
+            $wordCount = count($words[0]);
+            
+            // Send data
+            $client->getDatapointApi()->createDatapoint(
+                get_option('beeminder_ping_wordcount_goal'),
+                $wordCount,
+                "Post published: {$post->post_title}"
+            );
+            
+        }
         
     }
     
