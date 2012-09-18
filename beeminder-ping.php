@@ -104,7 +104,7 @@ class BeeminderPingPlugin
         }
         
         // Exit if post is already published (i.e. this was an edit)
-        if ($post->post_date != $post->post_modified) {
+        if (get_post_meta($postId, '_beeminder_ping_sent', true)) {
             return;
         }
         
@@ -122,7 +122,7 @@ class BeeminderPingPlugin
             );
             
         }
-
+        
         if (get_option('beeminder_ping_wordcount_enabled')) {
             
             // Count words
@@ -138,6 +138,9 @@ class BeeminderPingPlugin
             );
             
         }
+        
+        // Mark ping as sent
+        update_post_meta($postId, '_beeminder_ping_sent', true);
         
     }
     
