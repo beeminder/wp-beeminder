@@ -7,7 +7,7 @@
  *
  */
 
-$errors        = null;
+$errors         = null;
 $update_message = '';
 
 // Update options
@@ -45,7 +45,6 @@ if ( isset( $_POST['refresh'] ) ) {
 	$update_message = 'Goals Updated';
 
 }
-
 // Clear settings
 if ( isset( $_POST['clear'] ) ) {
 
@@ -114,7 +113,7 @@ $beeminder_wordcount_goal = get_option( 'beeminder_ping_wordcount_goal', null );
 		<div id="message" class="updated fade"><p><strong><?php _e( $update_message ); ?></strong></p></div>
 	<?php endif; ?>
 
-  <div id="beeminder-ping-settings">
+	<div id="beeminder-ping-settings">
 
 		<h3>API Settings</h3>
 		<p>
@@ -134,14 +133,14 @@ $beeminder_wordcount_goal = get_option( 'beeminder_ping_wordcount_goal', null );
 					<tr valign="top">
 						<th scope="row"><label for="beeminder_username">Beeminder Username</label></th>
 						<td>
-							<input name="beeminder_username" type="text" id="beeminder_username" value="<?php echo $beeminder_username; ?>" class="regular-text" />
+							<input name="beeminder_username" type="text" id="beeminder_username" value="<?php echo esc_attr( $beeminder_username ); ?>" class="regular-text" />
 						</td>
 					</tr>
 
 					<tr valign="top">
 						<th scope="row"><label for="beeminder_key">Beeminder API Key</label></th>
 						<td>
-							<input name="beeminder_key" type="text" id="beeminder_key" value="<?php echo $beeminder_key; ?>" class="regular-text" />
+							<input name="beeminder_key" type="text" id="beeminder_key" value="<?php echo esc_attr( $beeminder_key ); ?>" class="regular-text" />
 						</td>
 					</tr>
 
@@ -158,7 +157,7 @@ $beeminder_wordcount_goal = get_option( 'beeminder_ping_wordcount_goal', null );
 
 		</form>
 
-  </div>
+	</div>
 
 	<?php if ( $beeminder_key ) : ?>
 		<div id="beeminder-ping-actions">
@@ -183,23 +182,21 @@ $beeminder_wordcount_goal = get_option( 'beeminder_ping_wordcount_goal', null );
 								<label for="beeminder_single_enabled">
 									<input name="beeminder_single_enabled" #
 												 type="checkbox"
-												 id="beeminder_single_enabled" 
-												 value="1" 
-												 <?php checked( $beeminder_post_enabled ) ?>/>
+												 id="beeminder_single_enabled"
+												 value="1"
+													<?php checked( $beeminder_post_enabled ); ?> />
 									Send a ping when a post is published to the following goal:
 								</label>
 
 								<br />
 
 								<select name="beeminder_single_post">
-									<?php foreach ( $beeminder_goals as $goal ) { ?>
-										<option value="<?php echo $goal->slug; ?>" 
-																	 <?php
-																	 if ( $goal->slug == $beeminder_post_goal ) {
-																		 echo 'selected="true"'; }
-																	 ?>
-										><?php echo $goal->title; ?></option>
-									<?php } ?>
+									<?php foreach ( $beeminder_goals as $goal ) : ?>
+										<option value="<?php echo esc_attr( $goal->slug ); ?>"
+														<?php selected( $goal->slug === $beeminder_post_goal ); ?>>
+											<?php echo esc_html( $goal->title ); ?>
+										</option>
+									<?php endforeach; ?>
 								</select>
 							</td>
 						</tr>
@@ -208,21 +205,20 @@ $beeminder_wordcount_goal = get_option( 'beeminder_ping_wordcount_goal', null );
 							<th scope="row"><strong>Word Count Goal</strong></th>
 							<td>
 								<label for="beeminder_wordcount_enabled">
-									<input name="beeminder_wordcount_enabled" type="checkbox" id="beeminder_wordcount_enabled" value="1" 
-															 <?php
-															 if ( $beeminder_wordcount_enabled ) {
-																 echo 'checked="checked"'; }
-															 ?>
-									/>
+									<input name="beeminder_wordcount_enabled"
+												 type="checkbox"
+												 id="beeminder_wordcount_enabled"
+												 value="1"
+												 <?php checked( $beeminder_wordcount_enabled ); ?> />
 									Send the wordcount of a post when published to the following goal:
 								</label>
 
 								<br />
 
 								<select name="beeminder_wordcount_post">
-									<?php foreach ( $beeminder_goals as $goal ) { ?>
-										<option value="<?php echo esc_attr( $goal->slug ); ?>" 
-																	 <?php selected( $goal->slug === $beeminder_wordcount_goal ); ?>>
+									<?php foreach ( $beeminder_goals as $goal ) : ?>
+										<option value="<?php echo esc_attr( $goal->slug ); ?>"
+																		<?php selected( $goal->slug === $beeminder_wordcount_goal ); ?>>
 											<?php echo esc_html( $goal->title ); ?></option>
 									<?php endforeach; ?>
 								</select>
