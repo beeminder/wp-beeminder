@@ -1,3 +1,5 @@
+WARNING: This is very old now and may not work with modern WordPress.
+
 Beeminder Ping
 ==============
 
